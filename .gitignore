@@ -3,3 +3,7 @@ bin/
 obj/
 #*#
 *~
+*.layout
+*.bin
+*.depend
+.depend
