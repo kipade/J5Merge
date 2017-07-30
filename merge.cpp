@@ -272,7 +272,7 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 			printf("Finished!\n");
 			break; //finished
 		}
-		fileName = sections[i].input_file.c_str();
+		fileName = sections[i].dst_file.c_str();
 		section_id = sections[i].id;
 
         startAddress = sections[i].start_pos;
