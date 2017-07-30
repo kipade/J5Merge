@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+
+<object class="wxFrame" name="main_frame">
+    <title>J5 Binary Merge Tool</title>
+    <centered>1</centered>
+	<size>1200,600</size>
+    <object class="wxBoxSizer">
+		<orient>wxVERTICAL</orient>
+		<object class="sizeritem">
+			<flag>wxALL|wxEXPAND</flag>
+			<border>10</border>
+			<object class="wxFlexGridSizer">
+				<cols>6</cols>
+				<rows>0</rows>
+				<vgap>10</vgap>
+				<hgap>10</hgap>
+				<growablecols>1</growablecols>
+				
+				<!-- uboot 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择u-boot</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-u-boot-src-path">
+						<size>300, 25</size>
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-uboot">
+						<size>40, 25</size>
+						<label>浏览</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-uboot-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_uboot">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+				<!-- M3 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择M3</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-m3-src-path">
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-m3">
+						<size>40, 25</size>
+						<label>浏览</label>
+					</object>
+				</object>	
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-m3-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_m3">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+				<!-- DSP 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择DSP</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-dsp-src-path">
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-dsp">
+						<label>浏览</label>
+						<size>40, 25</size>
+					</object>
+				</object>	
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-dsp-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_dsp">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+			
+				<!-- uImage 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择uImage</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-uimage-src-path">
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-uimage">
+						<label>浏览</label>
+						<size>40, 25</size>
+					</object>
+				</object>	
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-uimage-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_uimage">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+				<!-- file system 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择文件系统</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-fs-src-path">
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-fs">
+						<label>浏览</label>
+						<size>40, 25</size>
+					</object>
+				</object>	
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-fs-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_fs">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+				<!-- SMC 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择SMC</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-smc-src-path">
+						<style>wxTE_READONLY</style>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-smc">
+						<label>浏览</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-smc-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_smc">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+				<!-- LUT 行-->
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>选择LUT</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<option>1</option>
+					<flag>wxEXPAND</flag>
+					<object class="wxTextCtrl" name="text-lut-src-path">
+						<!--style>wxTE_READONLY</style-->
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn-browse-lut">
+						<label>浏览</label>
+						<size>40, 25</size>
+					</object>
+				</object>		
+				<object class="sizeritem">
+					<object class="wxStaticText">
+						<label>版本:</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxTextCtrl" name="text-lut-version">
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="btn_deal_lut">
+						<label>生成</label>
+						<size>40, 25</size>
+					</object>
+				</object>
+				
+			</object>
+		</object><!--flexgrid sizeritem end-->
+		
+		<object class="sizeritem">
+			<flag>wxLEFT</flag>
+			<border>10</border>
+			<object class="wxBoxSizer">
+				<orient>wxHORIZONTAL</orient>
+				<object class="sizeritem">
+					<object class="wxButton" name="wxID_CANCEL">
+						<label>取消</label>
+					</object>
+				</object>
+				<object class="sizeritem">
+					<object class="wxButton" name="wxID_OK">
+						<label>合成</label>
+					</object>
+				</object>
+			</object>
+		</object>
+		
+	</object>
+</object>
+
+</resource>
