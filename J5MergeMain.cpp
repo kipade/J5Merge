@@ -181,7 +181,7 @@ static void ReplaceZeroWithSpace(char* buffer, int len)
     }
 }
 
-static wxString GetFileVersionByPos(const wxString& path, uint32_t pos)
+static wxString GetFileVersionByPos(const wxString& path, uint32_t pos, bool little_endian = true)
 {
     wxFile fi(path, wxFile::read);
     if(fi.IsOpened())
@@ -198,7 +198,13 @@ static wxString GetFileVersionByPos(const wxString& path, uint32_t pos)
                 if(version[i] == 0)
                     version[i] = 0xFF;
             }
-            return wxString::Format(wxT("%02X.%02X.%02X.%02X"), version[3], version[2], version[1], version[0]);
+            if(little_endian)
+            {
+                return wxString::Format(wxT("%02X.%02X.%02X.%02X"), version[3], version[2], version[1], version[0]);
+            }else
+            {
+                return wxString::Format(wxT("%02X.%02X.%02X.%02X"), version[0], version[1], version[2], version[3]);
+            }
         }
     }
     return wxT("FF.FF.FF.FF");
@@ -266,7 +272,9 @@ static wxString GetJ5FileVersion(uint32_t comp_id, const wxString& path)
         return GetFileVersionByTag(path, "U-Boot v");
     case 0x55AA0003:
     case 0x55AA0004:
-        return GetFileVersionByTag(path, "version:");;
+        return GetFileVersionByTag(path, "version:");
+    case 0x55AA0005:
+        return GetFileVersionByPos(path, 0, false);
     case 0x55AA0006:
         return GetFileVersionByPos(path, 0);
     }
