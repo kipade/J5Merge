@@ -782,12 +782,6 @@ void J5MergeFrame::OnMenuLoadFromDir(wxCommandEvent& event)
         RetsetControls();
         recent_autoload_dir = dlg.GetPath();
         LoadSrcFilesFromDir(recent_autoload_dir);
-
-        const char* key = "last_autoload_dir";
-        Setting& root = config.getRoot();
-        Setting& setting = root.lookup(key);
-
-        setting = recent_autoload_dir.mb_str();
     }
 }
 
