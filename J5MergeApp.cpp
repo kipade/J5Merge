@@ -60,6 +60,13 @@ bool J5MergeApp::OnInit()
         return false;
     wxXmlResource::Get()->InitAllHandlers();
 
+    #ifndef _WIN32
+    char path[256] = {0};
+    readlink("/proc/self/exe", path, 256);
+    wxFileName name(path);
+    wxSetWorkingDirectory(name.GetPath());
+    #endif
+
     if ( !wxXmlResource::Get()->LoadAllFiles("rc") )
         return false;
 
