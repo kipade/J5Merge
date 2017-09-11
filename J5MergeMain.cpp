@@ -193,16 +193,26 @@ static wxString GetFileVersionByPos(const wxString& path, uint32_t pos, bool lit
             uint8_t version[4];
             *(uint32_t*)version = 0;
             fi.Read(version, sizeof(version));
-            for(int i = 0; i < 4; ++i)
-            {
-                if(version[i] == 0)
-                    version[i] = 0xFF;
-            }
+
             if(little_endian)
             {
+                for(int i = 3; i >= 0; --i)
+                {
+                    if(version[i] == 0)
+                        version[i] = 0xFF;
+                    else
+                        break;
+                }
                 return wxString::Format(wxT("%02X.%02X.%02X.%02X"), version[3], version[2], version[1], version[0]);
             }else
             {
+                for(int i = 0; i < 4; ++i)
+                {
+                    if(version[i] == 0)
+                        version[i] = 0xFF;
+                    else
+                        break;
+                }
                 return wxString::Format(wxT("%02X.%02X.%02X.%02X"), version[0], version[1], version[2], version[3]);
             }
         }
@@ -783,11 +793,6 @@ void J5MergeFrame::OnMenuLoadFromDir(wxCommandEvent& event)
         recent_autoload_dir = dlg.GetPath();
         LoadSrcFilesFromDir(recent_autoload_dir);
 
-        const char* key = "last_autoload_dir";
-        Setting& root = config.getRoot();
-        Setting& setting = root.lookup(key);
-
-        setting = recent_autoload_dir.mb_str();
     }
 }
 
