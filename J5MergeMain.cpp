@@ -792,7 +792,6 @@ void J5MergeFrame::OnMenuLoadFromDir(wxCommandEvent& event)
         RetsetControls();
         recent_autoload_dir = dlg.GetPath();
         LoadSrcFilesFromDir(recent_autoload_dir);
-
     }
 }
 
