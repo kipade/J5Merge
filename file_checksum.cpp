@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include "common.h"
+#include <wx/log.h>
 /*===========================================================================*\
  * Other Header Files
 \*===========================================================================*/
@@ -118,8 +119,8 @@ static uint32_t sum_all_4bytes_aligned(uint8_t * start_address, uint32_t length)
 
 void print_usage()
 {
-    printf("Please enter input filename, output filename, output filesize(Hex)and version!\n");
-    printf("Example:checksum.exe uImage outImage 0x200000 v3.2.4\n");
+    wxLogMessage("Please enter input filename, output filename, output filesize(Hex)and version!\n");
+    wxLogMessage("Example:checksum.exe uImage outImage 0x200000 v3.2.4\n");
 }
 
 int convert_version(const char* str, uint32_t* version_result)
@@ -154,7 +155,7 @@ int convert_version(const char* str, uint32_t* version_result)
             }
             if(!isxdigit(str[pos]))
             {//不是一个合法的16进制字符
-                printf("Input version string [%s] is invalid.\n", str);
+                wxLogMessage("Input version string [%s] is invalid.\n", str);
                 return -1;
             }
             if(isdigit(str[pos]))
@@ -214,14 +215,14 @@ int do_gen_checked_file(int argc, char *argv[])
     if(NULL == inputFile)
     {
         err = errno;
-        printf("can't open input file for read[%u]!\n", err);
+        wxLogMessage("can't open input file for read[%u]!\n", err);
         return err;
     }
 
     sscanf(argv[3],"%x",&nOutputFileSize);
     if(0 == nOutputFileSize)
     {
-        printf("Read output file size error!\n");
+        wxLogMessage("Read output file size error!\n");
         goto EXIT;
     }
 
@@ -239,7 +240,7 @@ int do_gen_checked_file(int argc, char *argv[])
     }
     if((nLen + tail_size) > nOutputFileSize)
     {
-        printf("The input file size[%d] is too larget to dump into output file size[%d]\n",
+        wxLogMessage("The input file size[%d] is too larget to dump into output file size[%d]\n",
                 nLen, nOutputFileSize);
         err = EINVAL;
         goto EXIT;
@@ -250,7 +251,7 @@ int do_gen_checked_file(int argc, char *argv[])
     if(NULL == pInputBuff)
     {
         err = errno;
-        printf("Malloc buffer failed[%u]!\n", err);
+        wxLogMessage("Malloc buffer failed[%u]!\n", err);
         goto EXIT;
     }
 
@@ -259,14 +260,14 @@ int do_gen_checked_file(int argc, char *argv[])
     if(nCount != nLen)
     {
         err = errno;
-        printf("Read input file error[%u]!\n", err);
+        wxLogMessage("Read input file error[%u]!\n", err);
         goto EXIT;
     }
 
     //change version string to Hex format
     if(convert_version(argv[4]+1, &nVersion) != 0)
     {
-        printf("Get Version info failed\n");
+        wxLogMessage("Get Version info failed\n");
         err = EINVAL;
         goto EXIT;
     }
@@ -285,7 +286,7 @@ int do_gen_checked_file(int argc, char *argv[])
     if(NULL == outputFile)
     {
         err = errno;
-        printf("can't open output file for write[%u]!\n", err);
+        wxLogMessage("can't open output file for write[%u]!\n", err);
         goto EXIT;
     }
 
@@ -294,7 +295,7 @@ int do_gen_checked_file(int argc, char *argv[])
     if(nCount != nLen)
     {
         err = errno;
-        printf("Writefile error[%u]!\n", err);
+        wxLogMessage("Writefile error[%u]!\n", err);
         goto EXIT;
     }
 
@@ -309,7 +310,7 @@ int do_gen_checked_file(int argc, char *argv[])
     fwrite(&nLen,4,1,outputFile);
     fwrite(&nVersion,4,1,outputFile);
     fwrite(&nChecksum,4,1,outputFile);
-    printf("SectionEnd written: CEP: %08X, length: %08X, version: %08X, CRC: %08X\n", nCodeExistPattern, nLen, nVersion, nChecksum);
+    wxLogMessage("SectionEnd written: CEP: %08X, length: %08X, version: %08X, CRC: %08X\n", nCodeExistPattern, nLen, nVersion, nChecksum);
 
 EXIT:
     if(NULL != inputFile)

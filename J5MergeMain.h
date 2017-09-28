@@ -46,6 +46,8 @@ class J5MergeFrame: public wxFrame
         {
             idMenuQuit = 1000,
             idMenuLoadDir,
+            idMenuShowLog,
+            idMenuClearLog,
             idMenuAbout
         };
 
@@ -64,6 +66,9 @@ class J5MergeFrame: public wxFrame
         wxTextCtrl* text_fs_version;
         wxTextCtrl* text_smc_version;
         wxTextCtrl* text_lut_version;
+
+        wxTextCtrl* text_runlog;//日志输出窗口
+        bool show_log;//是否显示log
 
         wxString recent_source_dir;
         wxString recent_autoload_dir;
@@ -97,6 +102,8 @@ class J5MergeFrame: public wxFrame
         void OnAnyButtonPressed(wxCommandEvent& event);
         void OnGenerateComponent(wxCommandEvent& event);
         void OnMenuLoadFromDir(wxCommandEvent& event);
+        void OnMenuShowLog(wxCommandEvent& event);
+        void OnMenuClearLog(wxCommandEvent& event);
 
         DECLARE_EVENT_TABLE()
 };

@@ -70,7 +70,7 @@ extern "C"
 \*===========================================================================*/
 
 #define FLASH_STRUCTRUE_REVISION (unsigned int)0x00010000
-#define early_printf printf
+#define early_printf wxLogMessage
 #define edma_mem_copy memcpy
 typedef struct Flash_Memory_Map_Tag
 {

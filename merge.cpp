@@ -129,7 +129,7 @@ int read_and_write_file(FILE* inputFile, FILE* outputFile,unsigned char * pInput
 		nCountWrite = fwrite(pInputBuff,1,nCountRead,outputFile);
 		if(nCountWrite != nCountRead)
 		{
-			printf("\nWritefile error!\n");
+			wxLogMessage("\nWritefile error!\n");
 			return ERROR;
 		}
 		else
@@ -173,19 +173,19 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
     }
 	currentAddress = 0;
 
-	printf("start!\n");
+	wxLogMessage("start!\n");
 
 	/*const char* working_dir = "/home/kezhh/Work/Merged_Image";
 
 	if(chdir(working_dir))
 	{
-        printf("enter %s failed[%u].\n", working_dir, errno);
+        wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
 	}*/
 
 	pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
 	if(NULL == pInputBuff)
 	{
-		printf("Malloc buffer failed!\n");
+		wxLogMessage("Malloc buffer failed!\n");
 		ret = -EINVAL;
 		goto EXIT;
 	}
@@ -193,7 +193,7 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 	outputFile = fopen(output_file_path,"wb");
 	if(NULL == outputFile)
 	{
-		printf("can't open %s for write!\n", output_file_path);
+		wxLogMessage("can't open %s for write!\n", output_file_path);
 		ret = -EINVAL;
 		goto EXIT;
 	}
@@ -218,7 +218,7 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 			nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
 			if(nWrited != sizeof(section_number))
 			{
-				printf("\nWritefile error!\n");
+				wxLogMessage("\nWritefile error!\n");
 				ret = -EINVAL;
 				goto EXIT;
 			}
@@ -229,14 +229,14 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 			currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
 			if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
 			{
-				printf("\nWritefile error!\n");
+				wxLogMessage("\nWritefile error!\n");
 				ret = -EINVAL;
 				goto EXIT;
 			}
 
 			if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
 			{
-				printf("\nFlash Memory Map Write error!\n");
+				wxLogMessage("\nFlash Memory Map Write error!\n");
 				ret = -EINVAL;
 			}
 
@@ -269,17 +269,17 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 				currentAddress++;
 			}
 
-			printf("Finished!\n");
+			wxLogMessage("Finished!\n");
 			break; //finished
 		}
 		fileName = sections[i].dst_file.c_str();
 		section_id = sections[i].id;
 
         startAddress = sections[i].start_pos;
-		printf("s:0x%-7x ",startAddress);
+		wxLogMessage("s:0x%-7x ",startAddress);
 
 		endAddress = sections[i].end_pos;
-		printf("e:0x%-7x\n",endAddress);
+		wxLogMessage("e:0x%-7x\n",endAddress);
 
 		flash_memory_map[section_number].nSegmentId = section_id;
 		flash_memory_map[section_number].nSegmentStartAddress = startAddress;
@@ -288,7 +288,7 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 
 		if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
 		{
-			printf("\naddress error, please check it!\n");
+			wxLogMessage("\naddress error, please check it!\n");
 			ret = -EINVAL;
 			break; //address conflict
 		}
@@ -299,21 +299,21 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 		{
 			if(strcmp(fileName,"LUT") == 0)
 			{
-				printf("\nno lookup table data\n");
+				wxLogMessage("\nno lookup table data\n");
 				continue;
 			}
 			else
 			{
-				printf("\ncan't open %s for read!\n",fileName);
+				wxLogMessage("\ncan't open %s for read!\n",fileName);
 				break;
 			}
 		}
-        printf("processing file %s: OK\n", fileName);
+        wxLogMessage("processing file %s: OK\n", fileName);
 
 		ret = read_and_write_file(inputFile,outputFile,pInputBuff);
 		if((ret < 0) || (currentAddress != endAddress))
 		{
-			printf("\nread write file error!\n");
+			wxLogMessage("\nread write file error!\n");
 			ret = -EINVAL;
 			break;
 		}
@@ -369,19 +369,19 @@ int do_merge(int argc, const char *argv)
 	const char* output_file_path = "bev_nor_flash.bin";
 	currentAddress = 0;
 
-	printf("start!\n");
+	wxLogMessage("start!\n");
 
 	/*const char* working_dir = "/home/kezhh/Work/Merged_Image";
 
 	if(chdir(working_dir))
 	{
-        printf("enter %s failed[%u].\n", working_dir, errno);
+        wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
 	}*/
 
 	pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
 	if(NULL == pInputBuff)
 	{
-		printf("Malloc buffer failed!\n");
+		wxLogMessage("Malloc buffer failed!\n");
 		ret = -EINVAL;
 		goto EXIT;
 	}
@@ -389,7 +389,7 @@ int do_merge(int argc, const char *argv)
 	outputFile = fopen(output_file_path,"wb");
 	if(NULL == outputFile)
 	{
-		printf("can't open %s for write!\n", output_file_path);
+		wxLogMessage("can't open %s for write!\n", output_file_path);
 		ret = -EINVAL;
 		goto EXIT;
 	}
@@ -397,7 +397,7 @@ int do_merge(int argc, const char *argv)
 	cmdFile = fopen("config.txt","r");
 	if(NULL == outputFile)
 	{
-		printf("can't open command.txt for read!\n");
+		wxLogMessage("can't open command.txt for read!\n");
 		ret = -EINVAL;
 		goto EXIT;
 	}
@@ -421,7 +421,7 @@ int do_merge(int argc, const char *argv)
 			nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
 			if(nWrited != sizeof(section_number))
 			{
-				printf("\nWritefile error!\n");
+				wxLogMessage("\nWritefile error!\n");
 				ret = -EINVAL;
 				goto EXIT;
 			}
@@ -432,14 +432,14 @@ int do_merge(int argc, const char *argv)
 			currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
 			if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
 			{
-				printf("\nWritefile error!\n");
+				wxLogMessage("\nWritefile error!\n");
 				ret = -EINVAL;
 				goto EXIT;
 			}
 
 			if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
 			{
-				printf("\nFlash Memory Map Write error!\n");
+				wxLogMessage("\nFlash Memory Map Write error!\n");
 				ret = -EINVAL;
 			}
 
@@ -454,6 +454,7 @@ int do_merge(int argc, const char *argv)
 
 			nCrc = nCodeExistPattern + nLen + nVersion + section_number;
 			nCrc = check_sum((unsigned char *)flash_memory_map,sizeof(Flash_Memofy_Map_T) * section_number, nCrc);
+			wxLogMessage("Whole binay section end map crc: 0x%08x\n", nCrc);
 
 			//write CEP, Len, Version, CRC
 			fwrite(&nCodeExistPattern,4,1,outputFile);
@@ -472,18 +473,18 @@ int do_merge(int argc, const char *argv)
 				currentAddress++;
 			}
 
-			printf("Finished!\n");
+			wxLogMessage("Finished!\n");
 			break; //finished
 		}
-		printf("File : %-15s ",fileName);
+		wxLogMessage("File : %-15s ",fileName);
 
 		fscanf(cmdFile,"%x",&section_id);
 
 		fscanf(cmdFile,"%x",&startAddress);
-		printf("s:0x%-7x ",startAddress);
+		wxLogMessage("s:0x%-7x ",startAddress);
 
 		fscanf(cmdFile,"%x",&endAddress);
-		printf("e:0x%-7x\n",endAddress);
+		wxLogMessage("e:0x%-7x\n",endAddress);
 
 		flash_memory_map[section_number].nSegmentId = section_id;
 		flash_memory_map[section_number].nSegmentStartAddress = startAddress;
@@ -492,7 +493,7 @@ int do_merge(int argc, const char *argv)
 
 		if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
 		{
-			printf("\naddress error, please check it!\n");
+			wxLogMessage("\naddress error, please check it!\n");
 			ret = -EINVAL;
 			break; //address conflict
 		}
@@ -503,21 +504,21 @@ int do_merge(int argc, const char *argv)
 		{
 			if(strcmp(fileName,"LUT") == 0)
 			{
-				printf("\nno lookup table data\n");
+				wxLogMessage("\nno lookup table data\n");
 				continue;
 			}
 			else
 			{
-				printf("\ncan't open %s for read!\n",fileName);
+				wxLogMessage("\ncan't open %s for read!\n",fileName);
 				break;
 			}
 		}
-                printf("processing file %s: OK\n", fileName);
+                wxLogMessage("processing file %s: OK\n", fileName);
 
 		ret = read_and_write_file(inputFile,outputFile,pInputBuff);
 		if((ret < 0) || (currentAddress != endAddress))
 		{
-			printf("\nread write file error!\n");
+			wxLogMessage("\nread write file error!\n");
 			ret = -EINVAL;
 			break;
 		}
@@ -591,7 +592,7 @@ int main1(int argc, char* argv[])
 
 	if(chdir(working_dir))
 	{
-        printf("enter %s failed[%u].\n", working_dir, errno);
+        wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
 	}
 	check_binary("bev_nor_flash.bin");
 	return 0;

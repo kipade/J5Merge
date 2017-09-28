@@ -62,6 +62,8 @@ BEGIN_EVENT_TABLE(J5MergeFrame, wxFrame)
     EVT_MENU(idMenuQuit, J5MergeFrame::OnQuit)
     EVT_MENU(idMenuAbout, J5MergeFrame::OnAbout)
     EVT_MENU(idMenuLoadDir, J5MergeFrame::OnMenuLoadFromDir)
+    EVT_MENU(idMenuShowLog, J5MergeFrame::OnMenuShowLog)
+    EVT_MENU(idMenuClearLog, J5MergeFrame::OnMenuClearLog)
     //EVT_BUTTON(wxID_ANY, J5MergeFrame::OnAnyButtonPressed)
     EVT_BUTTON(wxID_OK, J5MergeFrame::OnAnyButtonPressed)
     EVT_BUTTON(wxID_CANCEL, J5MergeFrame::OnAnyButtonPressed)
@@ -104,6 +106,10 @@ J5MergeFrame::J5MergeFrame(wxFrame *frame, const wxString& title) : recent_sourc
     mbar->Append(fileMenu, wxT("文件"));
 
     wxMenu* helpMenu = new wxMenu(wxT(""));
+    wxMenu* logMenu = new wxMenu(wxT(""));
+    logMenu->AppendCheckItem(idMenuShowLog, wxT("显示日志"));
+    logMenu->Append(idMenuClearLog, wxT("清空日志"));
+    helpMenu->AppendSubMenu(logMenu, wxT("日志"));
     helpMenu->Append(idMenuAbout, wxT("关于\tF1"), wxT("关于本程序"));
     mbar->Append(helpMenu, wxT("帮助"));
 
@@ -114,7 +120,7 @@ J5MergeFrame::J5MergeFrame(wxFrame *frame, const wxString& title) : recent_sourc
     // create a status bar with some information about the used wxWidgets version
     CreateStatusBar(2);
     SetStatusText(wxT("欢迎使用!"),0);
-    SetStatusText(wxT("J5MergeApp v0.2"), 1);
+    SetStatusText(wxT("J5MergeApp v0.5"), 1);
 #endif // wxUSE_STATUSBAR
     InitControls();
     wxSizer* topSizer = GetSizer();
@@ -169,7 +175,7 @@ void J5MergeFrame::OnQuit(wxCommandEvent &event)
 void J5MergeFrame::OnAbout(wxCommandEvent &event)
 {
     //wxString msg = wxbuildinfo(long_f);
-    wxMessageBox(wxT("J5MergeApp v0.2"), wxT("关于..."));
+    wxMessageBox(wxT("J5MergeApp v0.5"), wxT("关于..."));
 }
 
 static void ReplaceZeroWithSpace(char* buffer, int len)
@@ -486,6 +492,18 @@ bool J5MergeFrame::InitControls()
     text_fs_version = XRCCTRL(*this, "text-fs-version", wxTextCtrl);
     text_smc_version = XRCCTRL(*this, "text-smc-version", wxTextCtrl);
     text_lut_version = XRCCTRL(*this, "text-lut-version", wxTextCtrl);
+
+    text_runlog = XRCCTRL(*this, "text_runlog", wxTextCtrl);
+    if(text_runlog != NULL)
+    {
+        wxLog::SetActiveTarget(new wxLogTextCtrl(text_runlog));
+
+        wxSizerItem* log_sizer = GetSizer()->GetItemById(XRCID("log_sizeritem"), true);
+        if(log_sizer != NULL)
+        {
+            log_sizer->Show(false);
+        }
+    }
 
 	return true;
 }
@@ -989,4 +1007,23 @@ void J5MergeFrame::RetsetControls()
         version_texts[i]->SetValue(wxEmptyString);
     }
 
+}
+
+void J5MergeFrame::OnMenuShowLog(wxCommandEvent& event)
+{
+    wxSizerItem* log_sizer = GetSizer()->GetItemById(XRCID("log_sizeritem"), true);
+    if(log_sizer != NULL)
+    {
+        bool show = log_sizer->IsShown();
+        log_sizer->Show(!show);
+        Layout();
+    }
+}
+
+void J5MergeFrame::OnMenuClearLog(wxCommandEvent& event)
+{
+    if(text_runlog != NULL)
+    {
+        text_runlog->Clear();
+    }
 }

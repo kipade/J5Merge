@@ -284,6 +284,22 @@
 				</object>
 			</object>
 		</object>
+        
+        <object class="sizeritem" name="log_sizeritem">
+            <flag>wxEXPAND|wxALL</flag>
+            <border>5</border>
+            <option>1</option>
+            <object class="wxStaticBoxSizer">
+                <label>日志</label>
+                <object class="sizeritem">
+                    <flag>wxEXPAND</flag>
+                    <option>1</option>
+                    <object class="wxTextCtrl" name="text_runlog">
+                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
+                    </object>
+                </object>
+            </object>
+        </object> <!--日志窗口-->
 		
 	</object>
 </object>

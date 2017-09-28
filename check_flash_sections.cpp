@@ -38,6 +38,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <stdio.h>
+#include <wx/log.h>
 /*===========================================================================*\
  * Local Preprocessor #define Constants
 \*===========================================================================*/
@@ -113,7 +114,7 @@ static void log_message(char* fmt, ...)
 
 void print_check_section_message()
 {
-    printf("%s\n", debug_string);
+    wxLogMessage("%s\n", debug_string);
 }
 
 /*===========================================================================*\
