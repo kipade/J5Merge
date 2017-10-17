@@ -29,6 +29,8 @@
 
 #include <algorithm>
 
+#include "CramfsFile.h"
+
 //helper functions
 enum wxbuildinfoformat {
     short_f, long_f };
@@ -280,12 +282,49 @@ static wxString GetFileVersionByTag(const wxString& filepath, const char* tag)
     return wxString("FF.FF.FF.FF");
 }
 
+static wxString GetVersionTag(uint8_t* buffer, size_t size, const char* tag)
+{
+    size_t tag_len = strlen(tag);
+    uint8_t* pos = buffer;
+    
+    while(pos < (buffer + (size - tag_len)))
+    {
+        if(strncmp((const char*)pos, tag, tag_len) == 0)
+        {
+            const char* version_str = (const char*)pos;
+            if(strlen(version_str + tag_len) > 5)
+            {
+                return wxString(version_str + tag_len);
+            }
+        }
+        pos++;
+    }
+    return wxT("FF.FF.FF.FF");
+}
+
+static wxString GetCramfsApphostVersion(const wxString& path)
+{
+    wxString version = wxT("FF.FF.FF.FF");
+    CramfsFile cramfs(path.c_str());
+    uint8_t* file_buffer;
+    size_t file_size;
+    if(cramfs.ExtractFile("/opt/app_host", file_buffer, file_size))
+    {
+        version = GetVersionTag(file_buffer, file_size, "version(str):");
+        version.Strip();
+        cramfs.FreeExtracedFileBuffer(file_buffer, file_size);
+    }
+    return version;
+}
+
 static wxString GetJ5FileVersion(uint32_t comp_id, const wxString& path)
 {
     switch(comp_id)
     {
     case 0x55AA0000:
         return GetFileVersionByTag(path, "U-Boot v");
+    case 0x55AA0002://文件系统
+        return GetCramfsApphostVersion(path);
     case 0x55AA0003:
     case 0x55AA0004:
         return GetFileVersionByTag(path, "version:");
@@ -471,6 +510,24 @@ void J5MergeFrame::OnAnyButtonPressed(wxCommandEvent& event)
         wxString file_version = GetJ5FileVersion(comp_id, src_path);
         text_version->SetValue(file_version);
         recent_source_dir = dlg.GetDirectory();
+        
+        if(comp_id == 0x55AA0002)
+        {//文件系统
+            if(!text_uimage_src_path->GetValue().empty())
+            {//如果uimage路径非空，则取版本
+                text_uimage_version->SetValue(file_version);
+            }
+        }else if(comp_id == 0x55AA0001)
+        {
+            if(file_version.Cmp(wxT("FF.FF.FF.FF")) == 0)//如果uImage版本是有效版本，并且文件系统版本为空，则用它填充
+            {
+                wxString fs_version = text_fs_version->GetValue();
+                if(fs_version.Length() != 0)
+                {
+                    text_uimage_version->SetValue(fs_version);
+                }
+            }
+        }
     }
 
 }
@@ -887,18 +944,26 @@ void J5MergeFrame::LoadSrcFilesFromDir(const wxString& path)
         text_uboot_version->SetValue(GetJ5FileVersion(0x55AA0000, fullname));
     }
 
-    fullname = SearchSpecifiedFile(path, "uImage");
-    if(fullname.IsEmpty() == false)
-    {
-        text_uimage_src_path->SetValue(fullname);
-        text_uimage_version->SetValue(GetJ5FileVersion(0x55AA0001, fullname));
-    }
-
     fullname = SearchSpecifiedFile(path, "rd-cramfs.bin");
     if(fullname.IsEmpty() == false)
     {
         text_fs_src_path->SetValue(fullname);
         text_fs_version->SetValue(GetJ5FileVersion(0x55AA0002, fullname));
+    }
+    
+    fullname = SearchSpecifiedFile(path, "uImage");
+    if(fullname.IsEmpty() == false)
+    {
+        text_uimage_src_path->SetValue(fullname);
+        wxString uimage_version = GetJ5FileVersion(0x55AA0001, fullname);
+        if(uimage_version.Cmp(wxT("FF.FF.FF.FF")) == 0)
+        {
+            wxString fs_version = text_fs_version->GetValue();
+            if(fs_version.Length() > 0)
+            {
+                text_uimage_version->SetValue(fs_version);
+            }
+        }
     }
 
     fullname = SearchSpecifiedFile(path, "SMC.bin");
