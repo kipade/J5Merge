@@ -91,7 +91,11 @@
 					<Add option="-DLIBCONFIG_STATIC" />
 					<Add option="-DLIBCONFIGXX_STATIC" />
 					<Add option="-Dlinux" />
+					<Add directory="." />
 				</Compiler>
+				<Linker>
+					<Add library="z" />
+				</Linker>
 			</Target>
 		</Build>
 		<Compiler>
@@ -101,6 +105,8 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 		</Linker>
+		<Unit filename="CramfsFile.cpp" />
+		<Unit filename="CramfsFile.h" />
 		<Unit filename="J5MergeApp.cpp" />
 		<Unit filename="J5MergeApp.h" />
 		<Unit filename="J5MergeMain.cpp" />
