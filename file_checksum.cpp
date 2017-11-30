@@ -206,7 +206,7 @@ int do_gen_checked_file(int argc, char *argv[])
     int err = 0;
     int tail_size = USED_BYTE_NUM_FROM_END;
 
-    if((argc < 5) || argv[1] == '\0' || argv[2] == '\0' || argv[3] == '\0' || argv[4] == '\0')
+    if((argc < 5) || *argv[1] == '\0' || *argv[2] == '\0' || *argv[3] == '\0' || *argv[4] == '\0')
     {
         print_usage();
         return EINVAL;

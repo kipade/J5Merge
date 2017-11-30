@@ -50,15 +50,10 @@
 #define READ_WRITE_SIZE 0x400 //1k
 #define FLASH_SIZE 0x2000000  //32M
 #define RESERVED_SIZE 0x400   //1k
-#define FLASH_MEMORY_MAP_START_ADDRESS    0x1FFF800 //1k size
-#define FLASH_MEMORY_MAP_END_ADDRESS    0x1FFFC00
+
 
 #define ERROR -1
 
-/* store real length and crc value */
-#define USED_BYTE_NUM_FROM_END 16
-#define CEP 0x55AA55AA
-#define FLASH_SECTION_MAX_NUMBER 0x20
 #define FLASH_STRUCTRUE_REVISION (unsigned int)0x00010000
 
 /*===========================================================================*\
@@ -200,7 +195,7 @@ int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 
 
 	//while(1)
-	for(int i = 0; i <= sections.size(); ++i)
+	for(size_t i = 0; i <= sections.size(); ++i)
 	{
 		if(i == sections.size())
 		{
