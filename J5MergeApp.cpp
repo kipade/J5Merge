@@ -41,18 +41,6 @@ static void Process(char* buffer, int size)
     }
 }
 
-typedef void (*Func)();
-class A
-{
-public:
-A()
-{
-    Func p = (Func)&A::test;
-}
-void test()
-{
-}
-};
 
 bool J5MergeApp::OnInit()
 {

@@ -75,25 +75,25 @@ class J5MergeFrame: public wxFrame
         const char* cfg_path;
         Config config;
 
-		vector<SectionItem> section_items;
-		vector<MergeConfigItem> merge_configs;
+        vector<SectionItem> section_items;
+        vector<MergeConfigItem> merge_configs;
 
-		SectionItem* GetSection(uint32_t id);
+        SectionItem* GetSection(uint32_t id);
         bool InitControls();
         bool SelectMergeConfig();//选择对应的合成配置(非软件配置)
         bool LoadMergeConfig(const wxString& path); //从文件加载合成选项
         int ParseMergeConfig(const Config& merge_cfg);//从配置对象加载合成选项
         void SortMergeConfigByOffset();//对各配置项按起始地址排序
-		bool DoMerge(const wxString& dst);
-		bool GenerateCheckedFiles(std::vector<SectionItem>* sections = NULL);
-		bool ParseConfig();
-		bool GenerateCheckedFile(const wxString& src, const wxString& dst, uint32_t id, const wxString& version);
-		wxString PreprocessDspM3(const wxString& src);
-		void DeleteAllSectionFiles();
-		void LoadSrcFilesFromDir(const wxString& dir);
-		bool SaveAppConfigs();
-		bool LoadAppConfigs();
-		void RetsetControls();
+        bool DoMerge(const wxString& dst);
+        bool GenerateCheckedFiles(std::vector<SectionItem>* sections = NULL);
+        bool ParseConfig();
+        bool GenerateCheckedFile(const wxString& src, const wxString& dst, uint32_t id, const wxString& version);
+        wxString PreprocessDspM3(const wxString& src);
+        void DeleteAllSectionFiles();
+        void LoadSrcFilesFromDir(const wxString& dir);
+        bool SaveAppConfigs();
+        bool LoadAppConfigs();
+        void RetsetControls();
 
         void OnClose(wxCloseEvent& event);
         void OnQuit(wxCommandEvent& event);

@@ -127,14 +127,14 @@ J5MergeFrame::J5MergeFrame(wxFrame *frame, const wxString& title) : recent_sourc
     InitControls();
     wxSizer* topSizer = GetSizer();
     topSizer->Fit(this);
-	ParseConfig();
+    ParseConfig();
 
-	/*
-	config_t cfg;
-	config_init(&cfg);
+    /*
+    config_t cfg;
+    config_init(&cfg);
 
-	if(config_read_file(&cfg, cfg_path) == CONFIG_TRUE)
-	{
+    if(config_read_file(&cfg, cfg_path) == CONFIG_TRUE)
+    {
         const char* recent_src_dir = NULL;
         if(config_lookup_string(&cfg, "last_source_dir", &recent_src_dir) == CONFIG_TRUE)
         {
@@ -153,8 +153,8 @@ J5MergeFrame::J5MergeFrame(wxFrame *frame, const wxString& title) : recent_sourc
             }
         }
         config_destroy(&cfg);
-	}*/
-	LoadAppConfigs();
+    }*/
+    LoadAppConfigs();
 
 }
 
@@ -243,8 +243,6 @@ static wxString GetFileVersionByTag(const wxString& filepath, const char* tag)
         wxInputStream* stm = process.GetInputStream();
         char buffer[1024] = {0};
         buffer[1023] = 0;
-        wxFileOffset pos;
-        wxFileOffset last_pos = 0;
         if(stm->CanRead())
         {
 
@@ -335,7 +333,7 @@ static wxString GetJ5FileVersion(uint32_t comp_id, const wxString& path)
     }
     return wxString("FF.FF.FF.FF");
 }
-
+/*
 static bool GenerateFinalFile(const wxString& src, const wxString& dst, uint32_t output_size, const wxString& version)
 {
     //if(do_gen_checked_file(src.ToAscii()))
@@ -354,7 +352,7 @@ static bool GenerateFinalFile(const wxString& src, const wxString& dst, uint32_t
 
     return false;
 }
-
+*/
 bool J5MergeFrame::SelectMergeConfig()
 {
     wxFileDialog dlg(this, wxT("选择合成配置文件..."), wxT("configs"), wxEmptyString, wxT("配置文件 (*.cfg)|*.cfg| 所有文件 (*.*)|*.*"), wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -439,15 +437,15 @@ void J5MergeFrame::OnAnyButtonPressed(wxCommandEvent& event)
     int id = event.GetId();
     if(event.GetId() == wxID_OK)
     {
-		wxString dst_name("bev_nor_flash.bin");
-		if(DoMerge(dst_name))
-		{
-			SetStatusText(wxT("合成成功！"),0);
-			wxMessageBox(wxT("生成成功!"));
-		}
-		else
-			SetStatusText(wxT("合成失败！"),0);
-		DeleteAllSectionFiles();//无论如何均清理临时文件
+        wxString dst_name("bev_nor_flash.bin");
+        if(DoMerge(dst_name))
+        {
+            SetStatusText(wxT("合成成功！"),0);
+            wxMessageBox(wxT("生成成功!"));
+        }
+        else
+            SetStatusText(wxT("合成失败！"),0);
+        DeleteAllSectionFiles();//无论如何均清理临时文件
         return;
     }else if(id == wxID_CANCEL)
     {
@@ -458,9 +456,9 @@ void J5MergeFrame::OnAnyButtonPressed(wxCommandEvent& event)
 
     wxTextCtrl* text_src_path = NULL;
     wxTextCtrl* text_version = NULL;
-	wxString wild_str = wxT("bin 文件 (*.bin)|*.bin|所有文件 (*.*)|*.*");
-	wxString default_dir = recent_source_dir;
-	uint32_t comp_id;
+    wxString wild_str = wxT("bin 文件 (*.bin)|*.bin|所有文件 (*.*)|*.*");
+    wxString default_dir = recent_source_dir;
+    uint32_t comp_id;
 
     if(XRCID("btn-browse-uboot") == id)
     {
@@ -472,19 +470,19 @@ void J5MergeFrame::OnAnyButtonPressed(wxCommandEvent& event)
         text_src_path = text_dsp_src_path;
         text_version = text_dsp_version;
         comp_id = 0x55AA0003;
-		wild_str = wxT("dsp 文件 (*.xe674)|*.xe674|所有文件 (*.*)|*.*");
+        wild_str = wxT("dsp 文件 (*.xe674)|*.xe674|所有文件 (*.*)|*.*");
     }else if(XRCID("btn-browse-m3") == id)
     {
         text_src_path = text_m3_src_path;
         text_version = text_m3_version;
         comp_id = 0x55AA0004;
-		wild_str = wxT("M3 文件 (*.xem3)|*.xem3|所有文件 (*.*)|*.*");
+        wild_str = wxT("M3 文件 (*.xem3)|*.xem3|所有文件 (*.*)|*.*");
     }else if(XRCID("btn-browse-uimage") == id)
     {
         text_src_path = text_uimage_src_path;
         text_version = text_uimage_version;
         comp_id = 0x55AA0001;
-		wild_str = wxT("所有文件 (*)|*");
+        wild_str = wxT("所有文件 (*)|*");
     }else if(XRCID("btn-browse-fs") == id)
     {
         text_src_path = text_fs_src_path;
@@ -501,11 +499,11 @@ void J5MergeFrame::OnAnyButtonPressed(wxCommandEvent& event)
         text_version = text_lut_version;
         comp_id = 0x55AA0006;
     }
-	wxFileDialog dlg(this, wxT("选择源文件..."), default_dir, wxEmptyString, wild_str, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
-	if(text_src_path != NULL && text_version && dlg.ShowModal() == wxID_OK)
+    wxFileDialog dlg(this, wxT("选择源文件..."), default_dir, wxEmptyString, wild_str, wxFD_OPEN|wxFD_FILE_MUST_EXIST);
+    if(text_src_path != NULL && text_version && dlg.ShowModal() == wxID_OK)
     {
-		wxString src_path = dlg.GetPath();
-		wxString src_file = dlg.GetFilename();
+        wxString src_path = dlg.GetPath();
+        wxString src_file = dlg.GetFilename();
         text_src_path->SetValue(src_path);//此时文件必定存在
         wxString file_version = GetJ5FileVersion(comp_id, src_path);
         text_version->SetValue(file_version);
@@ -562,23 +560,20 @@ bool J5MergeFrame::InitControls()
         }
     }
 
-	return true;
+    return true;
 }
 
 bool J5MergeFrame::DoMerge(const wxString& dst)
 {
     std::vector<SectionItem> target_sections;
-	if(GenerateCheckedFiles(&target_sections))
-	{
-
-		const char* args[1];
-		args[0] = dst.mb_str();
-		#ifdef NOCONFIG_FILE_SUPPORT
-		if(do_merge(target_sections, NULL) == 0)
-		#else
-		if(do_merge(1, args[0]) ==0 )
-		#endif
-		{
+    if(GenerateCheckedFiles(&target_sections))
+    {
+        #ifdef NOCONFIG_FILE_SUPPORT
+        if(do_merge(target_sections, NULL) == 0)
+        #else
+        if(do_merge(1, args[0]) ==0 )
+        #endif
+        {
             std::string val;
             const char* setting_path = "last_autoload_dir";
             if(config.lookupValue(setting_path, val))
@@ -588,171 +583,171 @@ bool J5MergeFrame::DoMerge(const wxString& dst)
 
                 item = val;
             }
-			return true;
-		}
-	}
-	return false;
+            return true;
+        }
+    }
+    return false;
 }
 
 
 bool J5MergeFrame::GenerateCheckedFiles(std::vector<SectionItem>* sections)
 {
-	wxTextCtrl* texts[] = {text_uboot_src_path,text_dsp_src_path,text_m3_src_path,text_uimage_src_path,text_fs_src_path, text_smc_src_path};
-	bool temp_sections = false;
+    wxTextCtrl* texts[] = {text_uboot_src_path,text_dsp_src_path,text_m3_src_path,text_uimage_src_path,text_fs_src_path, text_smc_src_path};
+    bool temp_sections = false;
 
-	for(int i = 0; i < sizeof(texts)/sizeof(wxTextCtrl*); ++i)
-	{
-		wxString label = texts[i]->GetValue();
-		if(label.IsEmpty())
-		{
-			wxMessageBox(wxT("请选择必需的源文件"));
-			return false;
-		}
-	}
-	if(sections == NULL)
-	{
+    for(size_t i = 0; i < sizeof(texts)/sizeof(wxTextCtrl*); ++i)
+    {
+        wxString label = texts[i]->GetValue();
+        if(label.IsEmpty())
+        {
+            wxMessageBox(wxT("请选择必需的源文件"));
+            return false;
+        }
+    }
+    if(sections == NULL)
+    {
         sections = new std::vector<SectionItem>;
         temp_sections = true;
-	}
+    }
 
-	wxString src_path = text_uboot_src_path->GetValue();
-	wxString src_version = text_uboot_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0000, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成uboot中间文件失败"));
-		return false;
-	}
+    wxString src_path = text_uboot_src_path->GetValue();
+    wxString src_version = text_uboot_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0000, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成uboot中间文件失败"));
+        return false;
+    }
 
-	sections->push_back(*GetSection(0x55AA0000));
+    sections->push_back(*GetSection(0x55AA0000));
 
-	src_path = text_uimage_src_path->GetValue();
-	src_version = text_uimage_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0001, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成uImage中间文件失败"));
-		return false;
-	}
-	sections->push_back(*GetSection(0x55AA0001));
+    src_path = text_uimage_src_path->GetValue();
+    src_version = text_uimage_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0001, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成uImage中间文件失败"));
+        return false;
+    }
+    sections->push_back(*GetSection(0x55AA0001));
 
-	src_path = text_fs_src_path->GetValue();
-	src_version = text_fs_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0002, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成Filesystem中间文件失败"));
-		return false;
-	}
+    src_path = text_fs_src_path->GetValue();
+    src_version = text_fs_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0002, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成Filesystem中间文件失败"));
+        return false;
+    }
     sections->push_back(*GetSection(0x55AA0002));
 
-	src_path = text_dsp_src_path->GetValue();
-	src_version = text_dsp_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0003, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成DSP中间文件失败"));
-		return false;
-	}
-	sections->push_back(*GetSection(0x55AA0003));
+    src_path = text_dsp_src_path->GetValue();
+    src_version = text_dsp_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0003, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成DSP中间文件失败"));
+        return false;
+    }
+    sections->push_back(*GetSection(0x55AA0003));
 
-	src_path = text_m3_src_path->GetValue();
-	src_version = text_m3_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0004, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成M3中间文件失败"));
-		return false;
-	}
-	sections->push_back(*GetSection(0x55AA0004));
+    src_path = text_m3_src_path->GetValue();
+    src_version = text_m3_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0004, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成M3中间文件失败"));
+        return false;
+    }
+    sections->push_back(*GetSection(0x55AA0004));
 
-	src_path = text_smc_src_path->GetValue();
-	src_version = text_smc_version->GetValue();
-	if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0005, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成SMC中间文件失败"));
-		return false;
-	}
-	sections->push_back(*GetSection(0x55AA0005));
+    src_path = text_smc_src_path->GetValue();
+    src_version = text_smc_version->GetValue();
+    if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0005, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成SMC中间文件失败"));
+        return false;
+    }
+    sections->push_back(*GetSection(0x55AA0005));
 
-	src_path = text_lut_src_path->GetValue();
-	if(src_path.IsEmpty() == false)
-	{
+    src_path = text_lut_src_path->GetValue();
+    if(src_path.IsEmpty() == false)
+    {
         src_version = text_lut_version->GetValue();
         if(GenerateCheckedFile(src_path, "First_boot", 0x55AA0006, wxString("v") + src_version) == false)
         {
             wxMessageBox(wxT("生成LUT中间文件失败"));
             return false;
         }
-        sections->push_back(*GetSection(0x55AA0006));
     }
+    sections->push_back(*GetSection(0x55AA0006));
     if(temp_sections)
     {
         delete sections;
         sections = NULL;
     }
-	return true;
+    return true;
 }
 
 wxString J5MergeFrame::PreprocessDspM3(const wxString& src)
 {
-	wxString output_file("tmp");
+    wxString output_file("tmp");
 #ifdef WIN32
-	wxString cmd = wxString::Format(wxT("out2rprc.exe %s %s"), src, output_file);
+    wxString cmd = wxString::Format(wxT("out2rprc.exe %s %s"), src, output_file);
 #else
-    wxString cmd = wxString::Format(wxT("mono out2rprc.exe %s %s"), src, output_file);
+    wxString cmd = wxString::Format(wxT("wine out2rprc.exe %s %s"), src, output_file);
 #endif
-	if(wxExecute(cmd, wxEXEC_SYNC) == 0)
-	{
-		if(wxFileName::Exists(output_file))
-		{
-			return output_file;
-		}
-	}
-	return wxEmptyString;
+    if(wxExecute(cmd, wxEXEC_SYNC) == 0)
+    {
+        if(wxFileName::Exists(output_file))
+        {
+            return output_file;
+        }
+    }
+    return wxEmptyString;
 }
 
 bool J5MergeFrame::GenerateCheckedFile(const wxString& src, const wxString& dst, uint32_t id, const wxString& version)
 {
-	SectionItem *section = GetSection(id);
-	if(section != NULL)
-	{
-		char buffer[32];
-		uint32_t section_size = section->end_pos - section->start_pos;
-		const char* args[5];
-		wxString input = src;
+    SectionItem *section = GetSection(id);
+    if(section != NULL)
+    {
+        char buffer[32];
+        uint32_t section_size = section->end_pos - section->start_pos;
+        const char* args[5];
+        wxString input = src;
 
-		wxString status_msg = wxString::Format(wxT("%s 正在生成..."), section->dst_file);
-		SetStatusText(status_msg,0);
+        wxString status_msg = wxString::Format(wxT("%s 正在生成..."), section->dst_file);
+        SetStatusText(status_msg,0);
 
-		if(id == 0x55AA0003 || id == 0x55AA0004)
-		{
-			input = PreprocessDspM3(src);
-			if(input.Length() <= 0)
-				return false;
-		}
+        if(id == 0x55AA0003 || id == 0x55AA0004)
+        {
+            input = PreprocessDspM3(src);
+            if(input.Length() <= 0)
+                return false;
+        }
 
 
-		sprintf(buffer, "%x", section_size);
-		args[0] = src.mb_str();
-		args[1] = input.mb_str();
-		args[2] = section->dst_file.c_str();//.mb_str();
-		args[3] = buffer;
-		args[4] = version.mb_str();
-		bool ret = false;
-		if(do_gen_checked_file(5, (char**)args) == 0)
-		{
-			ret = true;
-		}
-		if(input.Cmp(src))
-		{
-			wxRemoveFile(input);
-		}
-		status_msg = wxString::Format(wxT("%s 生成[%s]"), section->dst_file, ret==true?wxT("成功"):wxT("失败"));
-		SetStatusText(status_msg,0);
-		return ret;
-	}
-	return false;
+        sprintf(buffer, "%x", section_size);
+        args[0] = src.mb_str();
+        args[1] = input.mb_str();
+        args[2] = section->dst_file.c_str();//.mb_str();
+        args[3] = buffer;
+        args[4] = version.mb_str();
+        bool ret = false;
+        if(do_gen_checked_file(5, (char**)args) == 0)
+        {
+            ret = true;
+        }
+        if(input.Cmp(src))
+        {
+            wxRemoveFile(input);
+        }
+        status_msg = wxString::Format(wxT("%s 生成[%s]"), section->dst_file, ret==true?wxT("成功"):wxT("失败"));
+        SetStatusText(status_msg,0);
+        return ret;
+    }
+    return false;
 }
 
 bool J5MergeFrame::ParseConfig()
 {
-    for(int i = 0; i < merge_configs.size(); ++i)
+    for(size_t i = 0; i < merge_configs.size(); ++i)
     {
         SectionItem item;
         item.id = merge_configs[i].id;
@@ -774,23 +769,23 @@ bool J5MergeFrame::ParseConfig()
 SectionItem* J5MergeFrame::GetSection(uint32_t id)
 {
 
-	for(int i=0 ; i < section_items.size(); ++i)
-	{
-		if(section_items[i].id == id)
-		{
-			return &section_items[i];
-		}
-	}
-	return NULL;
+    for(size_t i=0 ; i < section_items.size(); ++i)
+    {
+        if(section_items[i].id == id)
+        {
+            return &section_items[i];
+        }
+    }
+    return NULL;
 }
 
 void J5MergeFrame::DeleteAllSectionFiles()
 {
-	for(size_t i = 0; i < section_items.size(); ++i)
-	{
-		if(wxFileExists(section_items[i].dst_file))
-			wxRemoveFile(section_items[i].dst_file);
-	}
+    for(size_t i = 0; i < section_items.size(); ++i)
+    {
+        if(wxFileExists(section_items[i].dst_file))
+            wxRemoveFile(section_items[i].dst_file);
+    }
 }
 
 void J5MergeFrame::OnGenerateComponent(wxCommandEvent& event)
@@ -798,7 +793,6 @@ void J5MergeFrame::OnGenerateComponent(wxCommandEvent& event)
     int id = event.GetId();
 
     wxTextCtrl* txt_src = NULL;
-    wxTextCtrl* txt_version = NULL;
     wxString src_version;
     wxString src_path;
     uint32_t item_id;
@@ -806,37 +800,30 @@ void J5MergeFrame::OnGenerateComponent(wxCommandEvent& event)
     if(id == XRCID("btn_deal_uboot"))
     {
         txt_src = text_uboot_src_path;
-        txt_version = text_uboot_version;
         item_id = 0x55AA0000;
     }else if(id == XRCID("btn_deal_uimage"))
     {
         txt_src = text_uimage_src_path;
-        txt_version = text_uimage_version;
         item_id = 0x55AA0001;
     }else if(id == XRCID("btn_deal_fs"))
     {
         txt_src = text_fs_src_path;
-        txt_version = text_fs_version;
         item_id = 0x55AA0002;
     }else if(id == XRCID("btn_deal_smc"))
     {
         txt_src = text_smc_src_path;
-        txt_version = text_smc_version;
         item_id = 0x55AA0005;
     }else if(id == XRCID("btn_deal_lut"))
     {
         txt_src = text_lut_src_path;
-        txt_version = text_lut_version;
         item_id = 0x55AA0006;
     }else if(id == XRCID("btn_deal_dsp"))
     {
         txt_src = text_dsp_src_path;
-        txt_version = text_dsp_version;
         item_id = 0x55AA0003;
     }else if(id == XRCID("btn_deal_m3"))
     {
         txt_src = text_m3_src_path;
-        txt_version = text_m3_version;
         item_id = 0x55AA0004;
     }
 
@@ -849,14 +836,14 @@ void J5MergeFrame::OnGenerateComponent(wxCommandEvent& event)
     if(src_path.IsEmpty())
         return;
 
-	if(GenerateCheckedFile(src_path, "First_boot", item_id, wxString("v") + src_version) == false)
-	{
-		wxMessageBox(wxT("生成中间文件失败!"));
-	}
-	else
-	{
+    if(GenerateCheckedFile(src_path, "First_boot", item_id, wxString("v") + src_version) == false)
+    {
+        wxMessageBox(wxT("生成中间文件失败!"));
+    }
+    else
+    {
         wxMessageBox(wxT("生成中间文件成功!"));
-	}
+    }
 }
 
 void J5MergeFrame::OnMenuLoadFromDir(wxCommandEvent& event)
@@ -997,8 +984,8 @@ void J5MergeFrame::LoadSrcFilesFromDir(const wxString& path)
 
 bool J5MergeFrame::LoadAppConfigs()
 {
-	if(config.ReadFromFile(cfg_path))
-	{
+    if(config.ReadFromFile(cfg_path))
+    {
         std::string val;
         Setting& root = config.getRoot();
         const char* key = "last_source_dir";
@@ -1009,7 +996,7 @@ bool J5MergeFrame::LoadAppConfigs()
         }
         else
         {
-            Setting& setting = root.add(key, Setting::TypeString);
+            root.add(key, Setting::TypeString);
         }
         key = "last_autoload_dir";
         if(root.exists(key))
@@ -1019,9 +1006,9 @@ bool J5MergeFrame::LoadAppConfigs()
         }
         else
         {
-            Setting& setting = root.add(key, Setting::TypeString);
+            root.add(key, Setting::TypeString);
         }
-	}
+    }
 
     return false;
 }
@@ -1063,11 +1050,11 @@ void J5MergeFrame::RetsetControls()
     wxTextCtrl* src_texts[] = {text_uboot_src_path,text_dsp_src_path,text_m3_src_path,text_uimage_src_path,text_fs_src_path, text_smc_src_path, text_lut_src_path};
     wxTextCtrl* version_texts[] = {text_uboot_version,text_dsp_version,text_m3_version,text_uimage_version,text_fs_version, text_smc_version, text_lut_version};
 
-    for(int i = 0; i < sizeof(src_texts)/sizeof(wxTextCtrl*); ++i)
+    for(size_t i = 0; i < sizeof(src_texts)/sizeof(wxTextCtrl*); ++i)
     {
         src_texts[i]->SetValue(wxEmptyString);
     }
-    for(int i = 0; i < sizeof(version_texts)/sizeof(wxTextCtrl*); ++i)
+    for(size_t i = 0; i < sizeof(version_texts)/sizeof(wxTextCtrl*); ++i)
     {
         version_texts[i]->SetValue(wxEmptyString);
     }

@@ -95,7 +95,7 @@ static uint32_t sum_all_4bytes_aligned(uint8_t * start_address, uint32_t length)
 #define CHECK_SECTIONS_MSGSIZE (1024)
 
 static char debug_string[CHECK_SECTIONS_MSGSIZE] = {0};
-
+/*
 static void log_message(char* fmt, ...)
 {
     int pos = strlen(debug_string);
@@ -111,6 +111,7 @@ static void log_message(char* fmt, ...)
 
     }
 }
+*/
 
 void print_check_section_message()
 {
@@ -126,7 +127,7 @@ Flash_Checksum_Result_T check_flash_sections(uint8_t* buffer, uint32_t buffer_si
    ptr_int nor_flash_base_addr = 0;
    Flash_Memofy_Map_T flash_memory_map[FLASH_SECTION_MAX_NUMBER];
    uint32_t section_number = 0;
-   uint32_t offset = 0;
+   ptr_int offset = 0;
    uint32_t len = 0;
    int32_t  i = 0;
    uint32_t section_start = 0;
@@ -190,7 +191,7 @@ Flash_Checksum_Result_T check_flash_sections(uint8_t* buffer, uint32_t buffer_si
    }
 
    //check each section 's checksum
-   for(i=0; i< section_number; i++)
+   for(i=0; (size_t)i < section_number; i++)
    {
       //read section end
       offset =  nor_flash_base_addr + flash_memory_map[i].nSegmentEndAddress - USED_BYTE_NUM_FROM_END;

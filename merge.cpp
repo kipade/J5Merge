@@ -80,9 +80,9 @@ bool check_binary(const char* path);
 /*
 typedef struct Flash_Memory_Map_Tag
 {
-	unsigned int nSegmentId;
-	unsigned int nSegmentStartAddress;
-	unsigned int nSegmentEndAddress;
+    unsigned int nSegmentId;
+    unsigned int nSegmentStartAddress;
+    unsigned int nSegmentEndAddress;
 } Flash_Memofy_Map_T;
 */
 /*===========================================================================*\
@@ -114,445 +114,445 @@ unsigned int currentAddress = 0;
 
 int read_and_write_file(FILE* inputFile, FILE* outputFile,unsigned char * pInputBuff)
 {
-	unsigned int nCountRead = 0;
-	unsigned int nCountWrite = 0;
-	unsigned int nLen = 0;
+    unsigned int nCountRead = 0;
+    unsigned int nCountWrite = 0;
+    unsigned int nLen = 0;
 
-	while(1)
-	{
-		nCountRead = fread(pInputBuff,1,READ_WRITE_SIZE ,inputFile);
-		nCountWrite = fwrite(pInputBuff,1,nCountRead,outputFile);
-		if(nCountWrite != nCountRead)
-		{
-			wxLogMessage("\nWritefile error!\n");
-			return ERROR;
-		}
-		else
-		{
-			currentAddress += nCountWrite;
-			nLen += nCountWrite;
-		}
+    while(1)
+    {
+        nCountRead = fread(pInputBuff,1,READ_WRITE_SIZE ,inputFile);
+        nCountWrite = fwrite(pInputBuff,1,nCountRead,outputFile);
+        if(nCountWrite != nCountRead)
+        {
+            wxLogMessage("\nWritefile error!\n");
+            return ERROR;
+        }
+        else
+        {
+            currentAddress += nCountWrite;
+            nLen += nCountWrite;
+        }
 
-		if(nCountWrite < READ_WRITE_SIZE)
-		{
-			break; //finished one file
-		}
-	}
+        if(nCountWrite < READ_WRITE_SIZE)
+        {
+            break; //finished one file
+        }
+    }
 
-	return 0;
+    return 0;
 }
 #ifdef NOCONFIG_FILE_SUPPORT
 int do_merge(std::vector<SectionItem>& sections, const char* output_file)
 {
-	FILE* inputFile = NULL;
-	FILE* outputFile = NULL;
-	unsigned char * pInputBuff =NULL;
-	int ret =0 ;
-	const char* fileName;
-	unsigned int startAddress = 0,endAddress = 0;
-	Flash_Memofy_Map_T flash_memory_map[FLASH_SECTION_MAX_NUMBER];
-	unsigned int section_number = 0;
-	unsigned int section_id = 0;
+    FILE* inputFile = NULL;
+    FILE* outputFile = NULL;
+    unsigned char * pInputBuff =NULL;
+    int ret =0 ;
+    const char* fileName;
+    unsigned int startAddress = 0,endAddress = 0;
+    Flash_Memofy_Map_T flash_memory_map[FLASH_SECTION_MAX_NUMBER];
+    unsigned int section_number = 0;
+    unsigned int section_id = 0;
 
-	unsigned int nVersion = FLASH_STRUCTRUE_REVISION;
-	unsigned int nCodeExistPattern = CEP;
-	unsigned int nLen = 0;
-	const char* output_file_path = output_file;
+    unsigned int nVersion = FLASH_STRUCTRUE_REVISION;
+    unsigned int nCodeExistPattern = CEP;
+    unsigned int nLen = 0;
+    const char* output_file_path = output_file;
 
-	if(sections.size() == 0)
+    if(sections.size() == 0)
         return 0;
 
-	if(output_file_path == NULL)
-	{
+    if(output_file_path == NULL)
+    {
         output_file_path = "bev_nor_flash.bin";
     }
-	currentAddress = 0;
+    currentAddress = 0;
 
-	wxLogMessage("start!\n");
+    wxLogMessage("start!\n");
 
-	/*const char* working_dir = "/home/kezhh/Work/Merged_Image";
+    /*const char* working_dir = "/home/kezhh/Work/Merged_Image";
 
-	if(chdir(working_dir))
-	{
+    if(chdir(working_dir))
+    {
         wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
-	}*/
+    }*/
 
-	pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
-	if(NULL == pInputBuff)
-	{
-		wxLogMessage("Malloc buffer failed!\n");
-		ret = -EINVAL;
-		goto EXIT;
-	}
+    pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
+    if(NULL == pInputBuff)
+    {
+        wxLogMessage("Malloc buffer failed!\n");
+        ret = -EINVAL;
+        goto EXIT;
+    }
 
-	outputFile = fopen(output_file_path,"wb");
-	if(NULL == outputFile)
-	{
-		wxLogMessage("can't open %s for write!\n", output_file_path);
-		ret = -EINVAL;
-		goto EXIT;
-	}
+    outputFile = fopen(output_file_path,"wb");
+    if(NULL == outputFile)
+    {
+        wxLogMessage("can't open %s for write!\n", output_file_path);
+        ret = -EINVAL;
+        goto EXIT;
+    }
 
 
-	//while(1)
-	for(size_t i = 0; i <= sections.size(); ++i)
-	{
-		if(i == sections.size())
-		{
-			unsigned int nCrc = 0;
-			unsigned int nWrited = 0;
-			//write flash memory map into the end, and reserve RESERVED_SIZE space
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_MEMORY_MAP_START_ADDRESS)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+    //while(1)
+    for(size_t i = 0; i <= sections.size(); ++i)
+    {
+        if(i == sections.size())
+        {
+            unsigned int nCrc = 0;
+            unsigned int nWrited = 0;
+            //write flash memory map into the end, and reserve RESERVED_SIZE space
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_MEMORY_MAP_START_ADDRESS)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			//write flash memory map section number
-			nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
-			if(nWrited != sizeof(section_number))
-			{
-				wxLogMessage("\nWritefile error!\n");
-				ret = -EINVAL;
-				goto EXIT;
-			}
-			currentAddress += sizeof(section_number);
+            //write flash memory map section number
+            nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
+            if(nWrited != sizeof(section_number))
+            {
+                wxLogMessage("\nWritefile error!\n");
+                ret = -EINVAL;
+                goto EXIT;
+            }
+            currentAddress += sizeof(section_number);
 
-			//write flash memory map each sections
-			nWrited = fwrite(flash_memory_map,1,sizeof(Flash_Memofy_Map_T) * section_number,outputFile);
-			currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
-			if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
-			{
-				wxLogMessage("\nWritefile error!\n");
-				ret = -EINVAL;
-				goto EXIT;
-			}
+            //write flash memory map each sections
+            nWrited = fwrite(flash_memory_map,1,sizeof(Flash_Memofy_Map_T) * section_number,outputFile);
+            currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
+            if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
+            {
+                wxLogMessage("\nWritefile error!\n");
+                ret = -EINVAL;
+                goto EXIT;
+            }
 
-			if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
-			{
-				wxLogMessage("\nFlash Memory Map Write error!\n");
-				ret = -EINVAL;
-			}
+            if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
+            {
+                wxLogMessage("\nFlash Memory Map Write error!\n");
+                ret = -EINVAL;
+            }
 
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_MEMORY_MAP_END_ADDRESS - USED_BYTE_NUM_FROM_END)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_MEMORY_MAP_END_ADDRESS - USED_BYTE_NUM_FROM_END)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			nLen = sizeof(section_number) + sizeof(Flash_Memofy_Map_T) * section_number;
+            nLen = sizeof(section_number) + sizeof(Flash_Memofy_Map_T) * section_number;
 
-			nCrc = nCodeExistPattern + nLen + nVersion + section_number;
-			nCrc = check_sum((unsigned char *)flash_memory_map,sizeof(Flash_Memofy_Map_T) * section_number, nCrc);
+            nCrc = nCodeExistPattern + nLen + nVersion + section_number;
+            nCrc = check_sum((unsigned char *)flash_memory_map,sizeof(Flash_Memofy_Map_T) * section_number, nCrc);
 
-			//write CEP, Len, Version, CRC
-			fwrite(&nCodeExistPattern,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nLen,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nVersion,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nCrc,4,1,outputFile);
-			currentAddress += 4;
+            //write CEP, Len, Version, CRC
+            fwrite(&nCodeExistPattern,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nLen,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nVersion,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nCrc,4,1,outputFile);
+            currentAddress += 4;
 
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_SIZE)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_SIZE)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			wxLogMessage("Finished!\n");
-			break; //finished
-		}
-		fileName = sections[i].dst_file.c_str();
-		section_id = sections[i].id;
+            wxLogMessage("Finished!\n");
+            break; //finished
+        }
+        fileName = sections[i].dst_file.c_str();
+        section_id = sections[i].id;
 
         startAddress = sections[i].start_pos;
-		wxLogMessage("s:0x%-7x ",startAddress);
+        wxLogMessage("s:0x%-7x ",startAddress);
 
-		endAddress = sections[i].end_pos;
-		wxLogMessage("e:0x%-7x\n",endAddress);
+        endAddress = sections[i].end_pos;
+        wxLogMessage("e:0x%-7x\n",endAddress);
 
-		flash_memory_map[section_number].nSegmentId = section_id;
-		flash_memory_map[section_number].nSegmentStartAddress = startAddress;
-		flash_memory_map[section_number].nSegmentEndAddress = endAddress;
-		section_number ++;
+        flash_memory_map[section_number].nSegmentId = section_id;
+        flash_memory_map[section_number].nSegmentStartAddress = startAddress;
+        flash_memory_map[section_number].nSegmentEndAddress = endAddress;
+        section_number ++;
 
-		if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
-		{
-			wxLogMessage("\naddress error, please check it!\n");
-			ret = -EINVAL;
-			break; //address conflict
-		}
+        if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
+        {
+            wxLogMessage("\naddress error, please check it!\n");
+            ret = -EINVAL;
+            break; //address conflict
+        }
 
-		inputFile = fopen(fileName,"rb");
+        inputFile = fopen(fileName,"rb");
 
-		if(NULL == inputFile)
-		{
-			if(strcmp(fileName,"LUT") == 0)
-			{
-				wxLogMessage("\nno lookup table data\n");
-				continue;
-			}
-			else
-			{
-				wxLogMessage("\ncan't open %s for read!\n",fileName);
-				break;
-			}
-		}
+        if(NULL == inputFile)
+        {
+            if(strcmp(fileName,"LUT") == 0)
+            {
+                wxLogMessage("\nno lookup table data\n");
+                continue;
+            }
+            else
+            {
+                wxLogMessage("\ncan't open %s for read!\n",fileName);
+                break;
+            }
+        }
         wxLogMessage("processing file %s: OK\n", fileName);
 
-		ret = read_and_write_file(inputFile,outputFile,pInputBuff);
-		if((ret < 0) || (currentAddress != endAddress))
-		{
-			wxLogMessage("\nread write file error!\n");
-			ret = -EINVAL;
-			break;
-		}
+        ret = read_and_write_file(inputFile,outputFile,pInputBuff);
+        if((ret < 0) || (currentAddress != endAddress))
+        {
+            wxLogMessage("\nread write file error!\n");
+            ret = -EINVAL;
+            break;
+        }
 
-		fclose(inputFile);
-		inputFile = NULL;
-	}
+        fclose(inputFile);
+        inputFile = NULL;
+    }
 
 EXIT:
-	if(NULL != inputFile)
-	{
-		fclose(inputFile);
-	}
+    if(NULL != inputFile)
+    {
+        fclose(inputFile);
+    }
 
-	if(NULL != outputFile)
-	{
-		fclose(outputFile);
-	}
+    if(NULL != outputFile)
+    {
+        fclose(outputFile);
+    }
 
-	if(NULL != pInputBuff)
-	{
-		free(pInputBuff);
-		pInputBuff = NULL;
-	}
+    if(NULL != pInputBuff)
+    {
+        free(pInputBuff);
+        pInputBuff = NULL;
+    }
 
-	//check
-	if(ret == 0)
-	{
+    //check
+    if(ret == 0)
+    {
         /*if(check_binary(output_file_path) != true)
         {
             ret = -1;
         }*/
     }
-	return ret;
+    return ret;
 }
 #endif
 int do_merge(int argc, const char *argv)
 {
-	FILE* inputFile = NULL;
-	FILE* outputFile = NULL;
-	FILE* cmdFile = NULL;
-	unsigned char * pInputBuff =NULL;
-	int ret =0 ;
-	char fileName[FILE_NAME_SIZE];
-	unsigned int startAddress = 0,endAddress = 0;
-	Flash_Memofy_Map_T flash_memory_map[FLASH_SECTION_MAX_NUMBER];
-	unsigned int section_number = 0;
-	unsigned int section_id = 0;
+    FILE* inputFile = NULL;
+    FILE* outputFile = NULL;
+    FILE* cmdFile = NULL;
+    unsigned char * pInputBuff =NULL;
+    int ret =0 ;
+    char fileName[FILE_NAME_SIZE];
+    unsigned int startAddress = 0,endAddress = 0;
+    Flash_Memofy_Map_T flash_memory_map[FLASH_SECTION_MAX_NUMBER];
+    unsigned int section_number = 0;
+    unsigned int section_id = 0;
 
-	unsigned int nVersion = FLASH_STRUCTRUE_REVISION;
-	unsigned int nCodeExistPattern = CEP;
-	unsigned int nLen = 0;
-	const char* output_file_path = "bev_nor_flash.bin";
-	currentAddress = 0;
+    unsigned int nVersion = FLASH_STRUCTRUE_REVISION;
+    unsigned int nCodeExistPattern = CEP;
+    unsigned int nLen = 0;
+    const char* output_file_path = "bev_nor_flash.bin";
+    currentAddress = 0;
 
-	wxLogMessage("start!\n");
+    wxLogMessage("start!\n");
 
-	/*const char* working_dir = "/home/kezhh/Work/Merged_Image";
+    /*const char* working_dir = "/home/kezhh/Work/Merged_Image";
 
-	if(chdir(working_dir))
-	{
+    if(chdir(working_dir))
+    {
         wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
-	}*/
+    }*/
 
-	pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
-	if(NULL == pInputBuff)
-	{
-		wxLogMessage("Malloc buffer failed!\n");
-		ret = -EINVAL;
-		goto EXIT;
-	}
+    pInputBuff = (unsigned char*) malloc(BUFFER_SIZE);
+    if(NULL == pInputBuff)
+    {
+        wxLogMessage("Malloc buffer failed!\n");
+        ret = -EINVAL;
+        goto EXIT;
+    }
 
-	outputFile = fopen(output_file_path,"wb");
-	if(NULL == outputFile)
-	{
-		wxLogMessage("can't open %s for write!\n", output_file_path);
-		ret = -EINVAL;
-		goto EXIT;
-	}
+    outputFile = fopen(output_file_path,"wb");
+    if(NULL == outputFile)
+    {
+        wxLogMessage("can't open %s for write!\n", output_file_path);
+        ret = -EINVAL;
+        goto EXIT;
+    }
 
-	cmdFile = fopen("config.txt","r");
-	if(NULL == outputFile)
-	{
-		wxLogMessage("can't open command.txt for read!\n");
-		ret = -EINVAL;
-		goto EXIT;
-	}
+    cmdFile = fopen("config.txt","r");
+    if(NULL == outputFile)
+    {
+        wxLogMessage("can't open command.txt for read!\n");
+        ret = -EINVAL;
+        goto EXIT;
+    }
 
-	while(1)
-	{
-		fscanf(cmdFile,"%s",fileName);
-		if(strcmp(fileName,"finish") == 0)
-		{
-			unsigned int nCrc = 0;
-			unsigned int nWrited = 0;
-			//write flash memory map into the end, and reserve RESERVED_SIZE space
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_MEMORY_MAP_START_ADDRESS)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+    while(1)
+    {
+        fscanf(cmdFile,"%s",fileName);
+        if(strcmp(fileName,"finish") == 0)
+        {
+            unsigned int nCrc = 0;
+            unsigned int nWrited = 0;
+            //write flash memory map into the end, and reserve RESERVED_SIZE space
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_MEMORY_MAP_START_ADDRESS)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			//write flash memory map section number
-			nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
-			if(nWrited != sizeof(section_number))
-			{
-				wxLogMessage("\nWritefile error!\n");
-				ret = -EINVAL;
-				goto EXIT;
-			}
-			currentAddress += sizeof(section_number);
+            //write flash memory map section number
+            nWrited = fwrite(&section_number,1,sizeof(section_number),outputFile);
+            if(nWrited != sizeof(section_number))
+            {
+                wxLogMessage("\nWritefile error!\n");
+                ret = -EINVAL;
+                goto EXIT;
+            }
+            currentAddress += sizeof(section_number);
 
-			//write flash memory map each sections
-			nWrited = fwrite(flash_memory_map,1,sizeof(Flash_Memofy_Map_T) * section_number,outputFile);
-			currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
-			if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
-			{
-				wxLogMessage("\nWritefile error!\n");
-				ret = -EINVAL;
-				goto EXIT;
-			}
+            //write flash memory map each sections
+            nWrited = fwrite(flash_memory_map,1,sizeof(Flash_Memofy_Map_T) * section_number,outputFile);
+            currentAddress += (sizeof(Flash_Memofy_Map_T) * section_number);
+            if(nWrited != (sizeof(Flash_Memofy_Map_T) * section_number))
+            {
+                wxLogMessage("\nWritefile error!\n");
+                ret = -EINVAL;
+                goto EXIT;
+            }
 
-			if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
-			{
-				wxLogMessage("\nFlash Memory Map Write error!\n");
-				ret = -EINVAL;
-			}
+            if(currentAddress > FLASH_MEMORY_MAP_END_ADDRESS)
+            {
+                wxLogMessage("\nFlash Memory Map Write error!\n");
+                ret = -EINVAL;
+            }
 
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_MEMORY_MAP_END_ADDRESS - USED_BYTE_NUM_FROM_END)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_MEMORY_MAP_END_ADDRESS - USED_BYTE_NUM_FROM_END)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			nLen = sizeof(section_number) + sizeof(Flash_Memofy_Map_T) * section_number;
+            nLen = sizeof(section_number) + sizeof(Flash_Memofy_Map_T) * section_number;
 
-			nCrc = nCodeExistPattern + nLen + nVersion + section_number;
-			nCrc = check_sum((unsigned char *)flash_memory_map,sizeof(Flash_Memofy_Map_T) * section_number, nCrc);
-			wxLogMessage("Whole binay section end map crc: 0x%08x\n", nCrc);
+            nCrc = nCodeExistPattern + nLen + nVersion + section_number;
+            nCrc = check_sum((unsigned char *)flash_memory_map,sizeof(Flash_Memofy_Map_T) * section_number, nCrc);
+            wxLogMessage("Whole binay section end map crc: 0x%08x\n", nCrc);
 
-			//write CEP, Len, Version, CRC
-			fwrite(&nCodeExistPattern,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nLen,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nVersion,4,1,outputFile);
-			currentAddress += 4;
-			fwrite(&nCrc,4,1,outputFile);
-			currentAddress += 4;
+            //write CEP, Len, Version, CRC
+            fwrite(&nCodeExistPattern,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nLen,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nVersion,4,1,outputFile);
+            currentAddress += 4;
+            fwrite(&nCrc,4,1,outputFile);
+            currentAddress += 4;
 
-			//attach 0xFF as pad
-			while(currentAddress < FLASH_SIZE)
-			{
-				fputc(0xFF,outputFile);
-				currentAddress++;
-			}
+            //attach 0xFF as pad
+            while(currentAddress < FLASH_SIZE)
+            {
+                fputc(0xFF,outputFile);
+                currentAddress++;
+            }
 
-			wxLogMessage("Finished!\n");
-			break; //finished
-		}
-		wxLogMessage("File : %-15s ",fileName);
+            wxLogMessage("Finished!\n");
+            break; //finished
+        }
+        wxLogMessage("File : %-15s ",fileName);
 
-		fscanf(cmdFile,"%x",&section_id);
+        fscanf(cmdFile,"%x",&section_id);
 
-		fscanf(cmdFile,"%x",&startAddress);
-		wxLogMessage("s:0x%-7x ",startAddress);
+        fscanf(cmdFile,"%x",&startAddress);
+        wxLogMessage("s:0x%-7x ",startAddress);
 
-		fscanf(cmdFile,"%x",&endAddress);
-		wxLogMessage("e:0x%-7x\n",endAddress);
+        fscanf(cmdFile,"%x",&endAddress);
+        wxLogMessage("e:0x%-7x\n",endAddress);
 
-		flash_memory_map[section_number].nSegmentId = section_id;
-		flash_memory_map[section_number].nSegmentStartAddress = startAddress;
-		flash_memory_map[section_number].nSegmentEndAddress = endAddress;
-		section_number ++;
+        flash_memory_map[section_number].nSegmentId = section_id;
+        flash_memory_map[section_number].nSegmentStartAddress = startAddress;
+        flash_memory_map[section_number].nSegmentEndAddress = endAddress;
+        section_number ++;
 
-		if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
-		{
-			wxLogMessage("\naddress error, please check it!\n");
-			ret = -EINVAL;
-			break; //address conflict
-		}
+        if((startAddress != currentAddress) || (endAddress > FLASH_SIZE))
+        {
+            wxLogMessage("\naddress error, please check it!\n");
+            ret = -EINVAL;
+            break; //address conflict
+        }
 
-		inputFile = fopen(fileName,"rb");
+        inputFile = fopen(fileName,"rb");
 
-		if(NULL == inputFile)
-		{
-			if(strcmp(fileName,"LUT") == 0)
-			{
-				wxLogMessage("\nno lookup table data\n");
-				continue;
-			}
-			else
-			{
-				wxLogMessage("\ncan't open %s for read!\n",fileName);
-				break;
-			}
-		}
+        if(NULL == inputFile)
+        {
+            if(strcmp(fileName,"LUT") == 0)
+            {
+                wxLogMessage("\nno lookup table data\n");
+                continue;
+            }
+            else
+            {
+                wxLogMessage("\ncan't open %s for read!\n",fileName);
+                break;
+            }
+        }
                 wxLogMessage("processing file %s: OK\n", fileName);
 
-		ret = read_and_write_file(inputFile,outputFile,pInputBuff);
-		if((ret < 0) || (currentAddress != endAddress))
-		{
-			wxLogMessage("\nread write file error!\n");
-			ret = -EINVAL;
-			break;
-		}
+        ret = read_and_write_file(inputFile,outputFile,pInputBuff);
+        if((ret < 0) || (currentAddress != endAddress))
+        {
+            wxLogMessage("\nread write file error!\n");
+            ret = -EINVAL;
+            break;
+        }
 
-		fclose(inputFile);
-		inputFile = NULL;
-	}
+        fclose(inputFile);
+        inputFile = NULL;
+    }
 
 EXIT:
-	if(NULL != inputFile)
-	{
-		fclose(inputFile);
-	}
+    if(NULL != inputFile)
+    {
+        fclose(inputFile);
+    }
 
-	if(NULL != outputFile)
-	{
-		fclose(outputFile);
-	}
+    if(NULL != outputFile)
+    {
+        fclose(outputFile);
+    }
 
-	if(NULL != cmdFile)
-	{
-		fclose(cmdFile);
-	}
+    if(NULL != cmdFile)
+    {
+        fclose(cmdFile);
+    }
 
-	if(NULL != pInputBuff)
-	{
-		free(pInputBuff);
-		pInputBuff = NULL;
-	}
+    if(NULL != pInputBuff)
+    {
+        free(pInputBuff);
+        pInputBuff = NULL;
+    }
 
-	//check
-	if(ret == 0)
-	{
+    //check
+    if(ret == 0)
+    {
         /*if(check_binary(output_file_path) != true)
         {
             ret = -1;
         }*/
     }
-	return ret;
+    return ret;
 }
 
 bool check_binary(const char* path)
@@ -585,11 +585,11 @@ int main1(int argc, char* argv[])
     const char* working_dir = "/home/kezhh/Work/Merged_Image";
     //const char* working_dir = "/mnt/dev/SVN/Merged_Image";
 
-	if(chdir(working_dir))
-	{
+    if(chdir(working_dir))
+    {
         wxLogMessage("enter %s failed[%u].\n", working_dir, errno);
-	}
-	check_binary("bev_nor_flash.bin");
-	return 0;
+    }
+    check_binary("bev_nor_flash.bin");
+    return 0;
 }
 */
